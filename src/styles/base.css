@@ -1,0 +1,113 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--color-ground);
+    color: var(--color-text);
+    -webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 1800px) {
+    html {
+        font-size: 112.5%;
+    }
+}
+
+@media (min-width: 2300px) {
+    html {
+        font-size: 125%;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+p,
+dl,
+dd {
+    margin: 0;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-emphasis);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: var(--color-emphasis);
+    color: var(--color-ground);
+}
+
+.display {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    line-height: var(--display-leading);
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.skip-link {
+    position: absolute;
+    top: var(--space-1);
+    left: var(--space-2);
+    z-index: 100;
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-emphasis);
+    color: var(--color-ground);
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    translate: 0 -200%;
+}
+
+.skip-link:focus-visible {
+    translate: 0 0;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
