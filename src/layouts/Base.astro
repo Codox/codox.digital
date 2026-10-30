@@ -1,0 +1,52 @@
+---
+import '@fontsource-variable/montserrat/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import montserrat from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+
+interface Props {
+    title: string;
+    description: string;
+    indexable?: boolean;
+}
+
+const {title, description, indexable = true} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const robots = indexable ? 'index, follow, max-image-preview:large, noai, noimageai' : 'noindex, noai, noimageai';
+---
+
+<!doctype html>
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="robots" content={robots} />
+        {indexable && <link rel="canonical" href={canonical} />}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <link rel="preload" href={montserrat} as="font" type="font/woff2" crossorigin />
+        <meta name="theme-color" content="#333333" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Codox Digital" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <slot name="head" />
+    </head>
+    <body>
+        <a class="skip-link" href="#main">Skip to content</a>
+        <slot />
+    </body>
+</html>
