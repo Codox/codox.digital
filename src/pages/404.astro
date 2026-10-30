@@ -1,0 +1,53 @@
+---
+import Sheet from '../components/blueprint/Sheet.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found | Codox Digital" description="This page does not exist." indexable={false}>
+    <main id="main" class="paper">
+        <Sheet labelledby="missing-title" number={1} total={1} title="Not found">
+            <div class="missing">
+                <p class="missing__kicker">Error 404</p>
+                <h1 id="missing-title" class="display missing__title">Page not found</h1>
+                <a class="missing__link" href="/">Back to home</a>
+            </div>
+        </Sheet>
+    </main>
+</Base>
+
+<style>
+    .paper {
+        padding: var(--space-1);
+    }
+
+    .missing {
+        display: grid;
+        align-self: center;
+        justify-items: start;
+        gap: var(--space-4);
+        width: 100%;
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-block: var(--space-4);
+    }
+
+    .missing__kicker {
+        font-family: var(--font-mono);
+        font-size: var(--size-label);
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--color-label);
+    }
+
+    .missing__title {
+        font-size: clamp(2.25rem, 6vw, 6rem);
+    }
+
+    .missing__link {
+        font-family: var(--font-mono);
+        font-size: 0.875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-underline-offset: 0.3em;
+    }
+</style>

@@ -1,0 +1,151 @@
+---
+import ContactDetails from '../components/blueprint/ContactDetails.astro';
+import GearDrawing from '../components/blueprint/GearDrawing.astro';
+import ProjectsTable from '../components/blueprint/ProjectsTable.astro';
+import Sheet from '../components/blueprint/Sheet.astro';
+import SheetIndex from '../components/blueprint/SheetIndex.astro';
+import Base from '../layouts/Base.astro';
+import {contact} from '../lib/contact';
+import {getProjects} from '../lib/projects';
+
+const projects = await getProjects();
+const names = projects.map((project) => project.data.name);
+const summaries = projects.map(
+    (project) => `${project.data.name} (${project.data.tagline.replace(/\.$/, '').toLowerCase()})`,
+);
+const description = `Codox Digital builds software and technology. Projects: ${new Intl.ListFormat('en-GB').format(summaries)}.`;
+const site = Astro.site!;
+const organisation = new URL('/#organization', site).href;
+const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+        {
+            '@type': 'Organization',
+            '@id': organisation,
+            name: 'Codox Digital',
+            url: site.href,
+            logo: new URL('/logo-square.png', site).href,
+            email: contact.email,
+            telephone: contact.phone,
+            contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'customer service',
+                email: contact.email,
+                telephone: contact.phone,
+            },
+            brand: projects.map((project) => ({
+                '@type': 'Brand',
+                name: project.data.name,
+                description: project.data.tagline,
+                ...(project.data.url && {url: project.data.url}),
+            })),
+        },
+        {
+            '@type': 'WebSite',
+            '@id': new URL('/#website', site).href,
+            url: site.href,
+            name: 'Codox Digital',
+            inLanguage: 'en-GB',
+            publisher: {'@id': organisation},
+        },
+    ],
+};
+const index = [
+    {number: 1, title: 'Home', href: '#home'},
+    {number: 2, title: 'Projects', href: '#projects', note: names.join(', ')},
+    {number: 3, title: 'Contact', href: '#contact', note: 'Email, phone'},
+];
+const sheets = index.length;
+---
+
+<Base title="Codox Digital | Software and technology" description={description}>
+    <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <main id="main" class="paper">
+        <Sheet id="home" labelledby="home-title" number={1} total={sheets} title="Home">
+            <div class="sheet__body sheet__body--split">
+                <div class="sheet__copy">
+                    <p class="kicker">Drawing CDX-001</p>
+                    <h1 id="home-title" class="display sheet__title">Codox Digital</h1>
+                    <SheetIndex entries={index} current={1} />
+                </div>
+                <GearDrawing />
+            </div>
+        </Sheet>
+
+        <Sheet id="projects" labelledby="projects-title" number={2} total={sheets} title="Projects">
+            <div class="sheet__body sheet__body--single">
+                <div class="sheet__copy">
+                    <p class="kicker">Drawing CDX-002</p>
+                    <h2 id="projects-title" class="display sheet__title">Projects</h2>
+                </div>
+                <ProjectsTable />
+            </div>
+        </Sheet>
+
+        <Sheet id="contact" labelledby="contact-title" number={3} total={sheets} title="Contact">
+            <div class="sheet__body sheet__body--single">
+                <div class="sheet__copy">
+                    <p class="kicker">Drawing CDX-003</p>
+                    <h2 id="contact-title" class="display sheet__title">Contact</h2>
+                </div>
+                <ContactDetails />
+            </div>
+        </Sheet>
+    </main>
+</Base>
+
+<style>
+    .paper {
+        padding: var(--space-1);
+    }
+
+    .sheet__body {
+        position: relative;
+        display: grid;
+        align-self: center;
+        gap: var(--space-5);
+        align-items: center;
+        width: 100%;
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-block: var(--space-2);
+    }
+
+    .sheet__copy {
+        display: grid;
+        justify-items: start;
+        gap: var(--space-4);
+    }
+
+    .kicker {
+        font-family: var(--font-mono);
+        font-size: var(--size-label);
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--color-label);
+    }
+
+    .sheet__title {
+        max-width: 11ch;
+        font-size: clamp(2.25rem, 7vw, 6rem);
+    }
+
+    .sheet__body--single {
+        align-items: start;
+    }
+
+    @media (min-width: 960px) {
+        .sheet__body {
+            padding: var(--space-4) var(--space-2);
+        }
+
+        .sheet__body--split {
+            grid-template-columns: 5fr 6fr;
+            gap: var(--space-6);
+        }
+
+        .sheet__title {
+            font-size: clamp(3.5rem, 6vw, 6rem);
+        }
+    }
+</style>
