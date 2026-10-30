@@ -1,0 +1,102 @@
+---
+interface Props {
+    title: string;
+    number: number;
+    total: number;
+}
+
+const {title, number, total} = Astro.props;
+const pad = (value: number) => String(value).padStart(2, '0');
+const year = new Date().getFullYear();
+---
+
+<dl class="title-block">
+    <div class="title-block__cell title-block__logo">
+        <dt class="visually-hidden">Company</dt>
+        <dd><img src="/codox-logo.png" alt="Codox Digital" width="122" height="40" /></dd>
+    </div>
+    <div class="title-block__cell title-block__title"><dt>Title</dt><dd>{title}</dd></div>
+    <div class="title-block__cell"><dt>Sheet</dt><dd>{pad(number)} of {pad(total)}</dd></div>
+    <div class="title-block__cell title-block__extra"><dt>Scale</dt><dd>1:1</dd></div>
+    <div class="title-block__cell title-block__extra"><dt>Date</dt><dd>{year}</dd></div>
+    <div class="title-block__cell title-block__extra"><dt>Rev</dt><dd>A</dd></div>
+</dl>
+
+<style>
+    .title-block {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: var(--rule-strong);
+        background: var(--color-ground);
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .title-block__cell {
+        display: grid;
+        align-content: center;
+        gap: 0.25rem;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .title-block__logo {
+        grid-column: 1 / -1;
+        border-bottom: var(--rule);
+    }
+
+    .title-block__title {
+        border-right: var(--rule);
+    }
+
+    .title-block__logo img {
+        width: auto;
+        height: 32px;
+    }
+
+    .title-block dt {
+        font-size: 0.625rem;
+        color: var(--color-hint);
+    }
+
+    .title-block dd {
+        color: var(--color-label);
+    }
+
+    .title-block__title dd {
+        color: var(--color-text);
+        font-size: 0.875rem;
+    }
+
+    .title-block__extra {
+        display: none;
+    }
+
+    @media (min-width: 640px) {
+        .title-block {
+            grid-template-columns: auto minmax(8rem, 1.6fr) repeat(4, minmax(4.5rem, 1fr));
+            justify-self: end;
+            width: min(100%, 48rem);
+        }
+
+        .title-block__extra {
+            display: grid;
+        }
+
+        .title-block__logo {
+            grid-column: auto;
+            border-bottom: 0;
+            padding-inline: 1rem;
+        }
+
+        .title-block__cell + .title-block__cell {
+            border-left: var(--rule);
+        }
+
+        .title-block__title {
+            border-right: 0;
+        }
+    }
+</style>

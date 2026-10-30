@@ -1,0 +1,138 @@
+---
+import {drivetrain, gearPath, pitchRadius, tipRadius} from '../../lib/gear';
+
+const [driver, driven] = drivetrain([14, 10]);
+const centres = driven.x - driver.x;
+const gears = [driver, driven].map((gear) => ({...gear, x: gear.x - driver.x}));
+const reach = (teeth: number) => tipRadius(teeth) + 1.4;
+const below = reach(14) + 1.2;
+---
+
+<svg
+    class="drawing"
+    viewBox={`${-reach(14) - 1} ${-reach(14) - 1} ${centres + reach(14) + reach(10) + 2} ${reach(14) * 2 + 4.5}`}
+    aria-hidden="true"
+    data-drawing
+>
+    {
+        gears.map((gear) => (
+            <g transform={`translate(${gear.x} ${gear.y})`}>
+                <circle class="drawing__pitch" r={pitchRadius(gear.teeth)} />
+                <line class="drawing__centre" x1={-reach(gear.teeth)} x2={reach(gear.teeth)} y1="0" y2="0" />
+                <line class="drawing__centre" y1={-reach(gear.teeth)} y2={reach(gear.teeth)} x1="0" x2="0" />
+                <path
+                    class="drawing__gear"
+                    d={gearPath(gear.teeth)}
+                    data-gear
+                    data-phase={gear.phase}
+                    data-ratio={gear.ratio}
+                    transform={`rotate(${gear.phase})`}
+                />
+            </g>
+        ))
+    }
+    <g class="drawing__dimension">
+        <line x1={gears[0].x} x2={gears[0].x} y1="0.6" y2={below + 0.4} />
+        <line x1={gears[1].x} x2={gears[1].x} y1="0.6" y2={below + 0.4} />
+        <line x1={gears[0].x + 0.4} x2={gears[1].x - 0.4} y1={below} y2={below} />
+        <path d={`M ${gears[0].x} ${below} l 0.6 -0.25 v 0.5 Z`} />
+        <path d={`M ${gears[1].x} ${below} l -0.6 -0.25 v 0.5 Z`} />
+        <text x={(gears[0].x + gears[1].x) / 2} y={below - 0.35} text-anchor="middle">C {centres.toFixed(2)}</text>
+    </g>
+    <g class="drawing__note">
+        <line x1="-5.9" y1="-5.9" x2="-8.4" y2="-8.4" />
+        <line x1="-8.4" y1="-8.4" x2="-4.4" y2="-8.4" />
+        <text x="-4.2" y="-8.6">Z14 · PCD 14.00</text>
+        <line x1={gears[1].x + 4.2} y1="-4.2" x2={gears[1].x + 5.4} y2="-6.6" />
+        <text x={gears[1].x + 2.6} y="-6.9">Z10 · 1.4 : 1</text>
+    </g>
+</svg>
+
+<style>
+    .drawing {
+        justify-self: center;
+        width: 100%;
+        max-width: min(36rem, 100%);
+        height: auto;
+        overflow: visible;
+    }
+
+    .drawing__gear {
+        fill: none;
+        stroke: #c9c9c9;
+        stroke-width: 1.25;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .drawing__pitch {
+        fill: none;
+        stroke: #7a7a7a;
+        stroke-width: 1;
+        stroke-dasharray: 0.45 0.3;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .drawing__centre {
+        stroke: #7a7a7a;
+        stroke-width: 1;
+        stroke-dasharray: 1.4 0.3 0.25 0.3;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .drawing__dimension line,
+    .drawing__note line {
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+    }
+
+    .drawing__dimension line {
+        stroke: var(--color-emphasis);
+    }
+
+    .drawing__dimension path,
+    .drawing__dimension text {
+        fill: var(--color-emphasis);
+    }
+
+    .drawing__note line {
+        stroke: var(--color-hint);
+    }
+
+    .drawing__note text {
+        fill: var(--color-label);
+    }
+
+    .drawing text {
+        font-family: var(--font-mono);
+        font-size: 0.62px;
+        letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 959px) {
+        .drawing__note {
+            display: none;
+        }
+
+        .drawing text {
+            font-size: 0.95px;
+        }
+    }
+</style>
+
+<script>
+    const drawing = document.querySelector<SVGSVGElement>('[data-drawing]');
+
+    if (drawing && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const gears = [...drawing.querySelectorAll<SVGPathElement>('[data-gear]')].map((path) => ({
+            path,
+            phase: Number(path.dataset.phase),
+            ratio: Number(path.dataset.ratio),
+        }));
+        const frame = (time: number) => {
+            const turn = time * 0.006 + window.scrollY * 0.08;
+            for (const gear of gears) gear.path.setAttribute('transform', `rotate(${gear.phase + gear.ratio * turn})`);
+            requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+    }
+</script>

@@ -1,0 +1,98 @@
+---
+import TitleBlock from './TitleBlock.astro';
+
+interface Props {
+    id?: string;
+    labelledby: string;
+    number: number;
+    total: number;
+    title: string;
+}
+
+const {id, labelledby, number, total, title} = Astro.props;
+const zonesAcross = ['A', 'B', 'C', 'D', 'E', 'F'];
+const zonesDown = ['1', '2', '3', '4'];
+const pattern = `sheet-grid-${number}`;
+---
+
+<section id={id} class="sheet" aria-labelledby={labelledby}>
+    <svg class="sheet__grid" aria-hidden="true">
+        <defs>
+            <pattern id={pattern} width="24" height="24" patternUnits="userSpaceOnUse">
+                <rect width="1.5" height="1.5" fill="#444444"></rect>
+            </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#${pattern})`}></rect>
+    </svg>
+    <ol class="zones zones--across" aria-hidden="true">{zonesAcross.map((zone) => <li>{zone}</li>)}</ol>
+    <ol class="zones zones--down" aria-hidden="true">{zonesDown.map((zone) => <li>{zone}</li>)}</ol>
+    <slot />
+    <TitleBlock title={title} number={number} total={total} />
+</section>
+
+<style>
+    .sheet {
+        position: relative;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: var(--space-4);
+        min-height: calc(100svh - var(--space-2));
+        padding: var(--space-6) var(--space-6) var(--space-4);
+        border: var(--rule-strong);
+        outline: 1px solid var(--color-border);
+        outline-offset: -10px;
+        overflow: clip;
+    }
+
+    .sheet + .sheet {
+        margin-top: var(--space-2);
+    }
+
+    .sheet__grid {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .zones {
+        position: absolute;
+        display: flex;
+        justify-content: space-around;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        color: var(--color-hint);
+    }
+
+    .zones--across {
+        inset: 0 2.5rem auto;
+        height: 2rem;
+        align-items: center;
+    }
+
+    .zones--down {
+        inset: 2.5rem auto 2.5rem 0;
+        width: 2rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @media (max-width: 959px) {
+        .sheet {
+            gap: var(--space-3);
+            padding: 2.5rem 1rem 1rem;
+            outline-offset: -6px;
+        }
+
+        .zones--across {
+            inset: 0 1rem auto;
+        }
+
+        .zones--down {
+            display: none;
+        }
+    }
+</style>

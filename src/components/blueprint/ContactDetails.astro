@@ -1,0 +1,70 @@
+---
+import {contact, phoneHref} from '../../lib/contact';
+---
+
+<div class="contact">
+    <p class="contact__lead">Reach us at</p>
+    <dl class="contact__list">
+        <div class="contact__row">
+            <dt>Email</dt>
+            <dd><a class="contact__link" href={`mailto:${contact.email}`}>{contact.email}</a></dd>
+        </div>
+        <div class="contact__row">
+            <dt>Phone</dt>
+            <dd><a class="contact__link" href={phoneHref}>{contact.phone}</a></dd>
+        </div>
+    </dl>
+</div>
+
+<style>
+    .contact {
+        display: grid;
+        gap: var(--space-3);
+    }
+
+    .contact__lead {
+        font-size: 1.125rem;
+        color: var(--color-lede);
+    }
+
+    .contact__list {
+        border-top: var(--rule-strong);
+    }
+
+    .contact__row {
+        display: grid;
+        gap: var(--space-1);
+        padding-block: var(--space-3);
+        border-bottom: var(--rule-strong);
+    }
+
+    .contact__row dt {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--color-hint);
+    }
+
+    .contact__link {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+        text-decoration: none;
+    }
+
+    .contact__link:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.25em;
+    }
+
+    @media (min-width: 720px) {
+        .contact__row {
+            grid-template-columns: 9rem 1fr;
+            align-items: baseline;
+            gap: var(--space-2);
+        }
+    }
+</style>

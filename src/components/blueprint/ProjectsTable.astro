@@ -1,0 +1,128 @@
+---
+import {getProjects} from '../../lib/projects';
+
+const projects = await getProjects();
+const pad = (value: number) => String(value).padStart(2, '0');
+---
+
+<table class="projects" role="table">
+    <thead role="rowgroup">
+        <tr role="row">
+            <th scope="col" role="columnheader">Item</th>
+            <th scope="col" role="columnheader">Project</th>
+            <th scope="col" role="columnheader">Description</th>
+            <th scope="col" role="columnheader">Status</th>
+        </tr>
+    </thead>
+    <tbody role="rowgroup">
+        {
+            projects.map((project, index) => (
+                <tr role="row">
+                    <td class="projects__item" role="cell">{pad(index + 1)}</td>
+                    <th scope="row" class="display projects__name" role="rowheader">
+                        {project.data.url ? <a href={project.data.url}>{project.data.name}</a> : project.data.name}
+                    </th>
+                    <td class="projects__description" role="cell">{project.data.tagline}</td>
+                    <td class="projects__status" role="cell">{project.data.status}</td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>
+
+<style>
+    .projects {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--color-ground);
+    }
+
+    .projects th,
+    .projects td {
+        padding: var(--space-3) var(--space-2);
+        border-bottom: var(--rule-strong);
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .projects thead th {
+        padding-block: var(--space-2);
+        border-top: var(--rule-strong);
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        font-weight: 400;
+        letter-spacing: var(--tracking-label);
+        text-transform: uppercase;
+        color: var(--color-hint);
+    }
+
+    .projects__item {
+        width: 7rem;
+        font-family: var(--font-mono);
+        color: var(--color-emphasis);
+    }
+
+    .projects__name {
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    .projects__name a {
+        text-decoration: none;
+    }
+
+    .projects__name a:hover {
+        color: var(--color-emphasis);
+    }
+
+    .projects__description {
+        max-width: 30ch;
+        color: var(--color-lede);
+    }
+
+    .projects__status {
+        font-family: var(--font-mono);
+        font-size: var(--size-label);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-label);
+    }
+
+    @media (max-width: 719px) {
+        .projects,
+        .projects tbody,
+        .projects tr,
+        .projects th,
+        .projects td {
+            display: block;
+        }
+
+        .projects thead {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+        }
+
+        .projects tbody {
+            border-top: var(--rule-strong);
+        }
+
+        .projects tr {
+            display: grid;
+            gap: var(--space-1);
+            padding-block: var(--space-3);
+            border-bottom: var(--rule-strong);
+        }
+
+        .projects th,
+        .projects td {
+            padding: 0;
+            border: 0;
+        }
+
+        .projects__item {
+            width: auto;
+        }
+    }
+</style>
